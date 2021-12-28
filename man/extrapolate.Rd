@@ -15,7 +15,8 @@ extrapolate.robust(df, counts, n = 100)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{df}{
-A sites by taxa matrix or dataframe, containing the numbers (or frequencies) of identified nematodes. Either way, it will be standardised by deviding with row totals.
+A sites by taxa matrix or dataframe, containing the numbers (or frequencies) of 
+identified nematodes. Either way, it will be standardised by deviding with row totals.
 }
   \item{counts}{
 A vector with the number of counted nematodes in each site.
@@ -29,8 +30,15 @@ number of iterations
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 \itemize{
-\item extrapolate() simply multiplies the frequency of each taxon in the subsample with the total number of nematodes in each site. This implicitly assumes that the composition of the identified subsample is perfectly representative of the total.
-\item extrapolate.robust() treats the frequencies of taxa in the identified subsample as probabilities. It then draws randomly, with replacement, from the possible taxa a number equal to the counted nematodes, where the probability of each taxon being drawn is its frequency in the subsample. The process is iterated n times yielding n versions of each site.
+\item extrapolate() simply multiplies the frequency of each taxon in the 
+subsample with the total number of nematodes in each site. This implicitly 
+assumes that the composition of the identified subsample is perfectly 
+representative of the total.
+\item extrapolate.robust() treats the frequencies of taxa in the identified 
+subsample as probabilities. It then draws randomly, with replacement, from the 
+possible taxa a number equal to the counted nematodes, where the probability of 
+each taxon being drawn is its frequency in the subsample. The process is iterated 
+n times yielding n versions of each site.
 }
 
 }
@@ -57,7 +65,13 @@ Angelos Amyntas
 }
 \note{
 %%  ~~further notes~~
-What you should NOT do with the output of .robust (or any downstream product such as the Enrichment Index), is treat the iterations as levels of a random effect in a regression; this would artificially inflate the number of observations, likely making any difference, however small and bogus, highly significant! What you should do is open to discussion; one simple idea is to fit n individual regressions and examine the distribution of the lower and upper bounds of their confidence intervals.
+What you should NOT do with the output of .robust (or any downstream product 
+such as the Enrichment Index), is treat the iterations as levels of a random 
+effect in a regression; this would artificially inflate the number of observations, 
+likely making any difference, however small and bogus, highly significant! What 
+you should do is open to discussion; one simple idea is to fit n individual 
+regressions and examine the distribution of the lower and upper bounds of their 
+confidence intervals.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
