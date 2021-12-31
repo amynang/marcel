@@ -34,11 +34,11 @@ number of iterations
 subsample with the total number of nematodes in each site. This implicitly 
 assumes that the composition of the identified subsample is perfectly 
 representative of the total.
-\item extrapolate.robust() treats the frequencies of taxa in the identified 
-subsample as probabilities. It then draws randomly, with replacement, from the 
-possible taxa a number equal to the counted nematodes, where the probability of 
-each taxon being drawn is its frequency in the subsample. The process is iterated 
-n times yielding n versions of each site.
+\item extrapolate.robust() is a bootstraping approach (I think). It treats the 
+frequencies of taxa in the identified subsample as probabilities. It then draws 
+randomly, with replacement, from the possible taxa a number equal to the counted 
+nematodes, where the probability of each taxon being drawn is its frequency in 
+the subsample. The process is iterated n times yielding n versions of each site.
 }
 
 }
@@ -68,8 +68,9 @@ Angelos Amyntas
 What you should NOT do with the output of .robust (or any downstream product 
 such as the Enrichment Index), is treat the iterations as levels of a random 
 effect in a regression; this would artificially inflate the number of observations, 
-likely making any difference, however small and bogus, highly significant! What 
-you should do is open to discussion; one simple idea is to fit n individual 
+likely making any difference, however small and bogus, highly significant! 
+
+What you should do is open to discussion; one simple idea is to fit n individual 
 regressions and examine the distribution of the lower and upper bounds of their 
 confidence intervals.
 }
