@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 %%  ~~function to do ... ~~
-Query NEMAPLEX to retrive information about nematode taxa
+Query NEMAPLEX to retrieve information about nematode taxa
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
@@ -20,6 +20,10 @@ A vector with the taxa for which the database will be queried.
 }
 \details{
 If the input contains taxa not present in Nemaplex, these will appear on the console
+
+query_nemaplex() currently uses Firefox, so the browser needs to be installed in 
+your computer. It also requires JAVA. For 64bit(32bit) R you need 64bit(32bit) JAVA.
+
 }
 \value{
 %%  ~Describe the value returned
