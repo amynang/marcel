@@ -16,7 +16,7 @@ extrapolate.robust(df, counts, n = 100)
 \arguments{
   \item{df}{
 A sites by taxa matrix or dataframe, containing the numbers (or frequencies) of 
-identified nematodes. Either way, it will be standardised by deviding with row totals.
+identified nematodes. Either way, it will be standardised by dividing with row totals.
 }
   \item{counts}{
 A vector with the number of counted nematodes in each site.
@@ -36,7 +36,7 @@ assumes that the composition of the identified subsample is perfectly
 representative of the total.
 \item extrapolate.robust() is a bootstraping approach (I think). It treats the 
 frequencies of taxa in the identified subsample as probabilities. It then draws 
-randomly, with replacement, from the possible taxa a number equal to the counted 
+randomly, with replacement, from the possible taxa, a number equal to the counted 
 nematodes, where the probability of each taxon being drawn is its frequency in 
 the subsample. The process is iterated n times yielding n versions of each site.
 }
