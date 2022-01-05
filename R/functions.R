@@ -1,3 +1,12 @@
+# this one needs checking and tests 
+extrapolate = function(df, counts) {
+  extra = df %>% mutate(across(everything(), # for all columns
+                               # we multiply by total abundance and divide by 100
+                               ~ .*as.numeric(counts)/100))
+  return(extra)
+}
+
+
 
 extrapolate.robust = function(df, counts, n = 100) {
   
