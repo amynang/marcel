@@ -139,7 +139,7 @@ query_nemaplex = function(taxa) {
     rownames(taxa.fam) = taxa.fam[,1]
     taxa.fam = taxa.fam[,-1]
     all.fam = as.data.frame(t(taxa.fam))
-    all.fam = data.frame(lapply(all.fam, as.numeric))
+    all.fam[,5:28] = data.frame(lapply(all.fam[,5:28], as.numeric))
   }else{
     # in case your input contains no families
     all.fam = vector(mode = "list", length(taxa.s))
@@ -208,7 +208,7 @@ query_nemaplex = function(taxa) {
     rownames(taxa.gen) = taxa.gen[,1]
     taxa.gen = taxa.gen[,-1]
     all.gen = as.data.frame(t(taxa.gen))
-    all.gen = data.frame(lapply(all.gen, as.numeric))
+    all.gen[,3:26] = data.frame(lapply(all.gen[,3:26], as.numeric))
   }else{
     # in case your input contains no genera
     all.fam = vector(mode = "list", length(taxa.s))
