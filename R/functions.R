@@ -91,52 +91,60 @@ query_nemaplex = function(taxa) {
   # filter your taxa to get only those that are in the above list
   taxa.s = taxa[taxa %in% f.present]
   
-  element = "//*/option[@value = '']"
-  
-  family.list = vector(mode = "list", length(taxa.s))
-  #names(dadada) = taxa
-  
-  for (taxon in 1:length(taxa.s)) {
-    # which url
-    remDr$navigate("http://nemaplex.ucdavis.edu/Ecology/EcophysiologyParms/FamilyParmsQuery.aspx") 
-    # which element
-    opt1 <- remDr$findElement(using='xpath', value= '//*[@id="DropDownList2"]')
-    # click
-    opt1$clickElement()
-    # we place a Family between the ''...
-    opt2 <- remDr$findElement(using = 'xpath', paste(c(substr(element, 1, 21), 
-                                                       substr(element, 22,23)), 
-                                                     collapse = taxa.s[taxon]))
-    # ...then click
-    opt2$clickElement()
-    # we select the Process Query button and click
-    opt3 <- remDr$findElement(using = 'xpath', value= '//*[@id="Button1"]')
-    opt3$clickElement()
+  if (length(taxa.s) > 0) { 
     
-    # ta-dan! we are inside the Family Parameters page
+    # taxa names will be interposed between the ''
+    element = "//*/option[@value = '']"
     
-    # I do not know why this works but it gives a list with all tables
-    find.tables <- remDr$findElement(using = 'xpath', value= '//*[@id="DetailsView5"]')
-    tables = find.tables$getPageSource()[[1]] %>% read_html() %>% html_table(fill = TRUE)
+    family.list = vector(mode = "list", length(taxa.s))
+    #names(dadada) = taxa
     
-    # we select the tables with taxon parameters and combine them
-    family.list[[taxon]] = rbind(tables[[4]],tables[[5]],tables[[6]]) 
+    for (taxon in 1:length(taxa.s)) {
+      # which url
+      remDr$navigate("http://nemaplex.ucdavis.edu/Ecology/EcophysiologyParms/FamilyParmsQuery.aspx") 
+      # which element
+      opt1 <- remDr$findElement(using='xpath', value= '//*[@id="DropDownList2"]')
+      # click
+      opt1$clickElement()
+      # we place a Family between the ''...
+      opt2 <- remDr$findElement(using = 'xpath', paste(c(substr(element, 1, 21), 
+                                                         substr(element, 22,23)), 
+                                                       collapse = taxa.s[taxon]))
+      # ...then click
+      opt2$clickElement()
+      # we select the Process Query button and click
+      opt3 <- remDr$findElement(using = 'xpath', value= '//*[@id="Button1"]')
+      opt3$clickElement()
+      
+      # ta-dan! we are inside the Family Parameters page
+      
+      # I do not know why this works but it gives a list with all tables
+      find.tables <- remDr$findElement(using = 'xpath', value= '//*[@id="DetailsView5"]')
+      tables = find.tables$getPageSource()[[1]] %>% read_html() %>% html_table(fill = TRUE)
+      
+      # we select the tables with taxon parameters and combine them
+      family.list[[taxon]] = rbind(tables[[4]],tables[[5]],tables[[6]]) 
+      
+      # name columns after 1st row ("Family","(family name)")
+      family.list[[taxon]] = family.list[[taxon]] %>% 
+        setNames(family.list[[taxon]][1,]) %>% 
+        # then drop that row
+        dplyr::slice(-1)
+      
+      
+    }
     
-    # name columns after 1st row ("Family","(family name)")
-    family.list[[taxon]] = family.list[[taxon]] %>% 
-      setNames(family.list[[taxon]][1,]) %>% 
-      # then drop that row
-      dplyr::slice(-1)
-    
-    
+    taxa.fam = family.list %>% reduce(full_join, by = "Family")
+    taxa.fam = as.data.frame(taxa.fam)
+    rownames(taxa.fam) = taxa.fam[,1]
+    taxa.fam = taxa.fam[,-1]
+    all.fam = as.data.frame(t(taxa.fam))
+    all.fam = data.frame(lapply(all.fam, as.numeric))
+  }else{
+    # in case your input contains no families
+    all.fam = vector(mode = "list", length(taxa.s))
+    print("No families in input")
   }
-  
-  taxa.fam = family.list %>% reduce(full_join, by = "Family")
-  taxa.fam = as.data.frame(taxa.fam)
-  rownames(taxa.fam) = taxa.fam[,1]
-  taxa.fam = taxa.fam[,-1]
-  all.fam = as.data.frame(t(taxa.fam))
-  
   
   ############################## Genus level Query ###############################
   
@@ -152,63 +160,69 @@ query_nemaplex = function(taxa) {
   # filter your taxa to get only those in the above list
   taxa.s = taxa[taxa %in% g.present]
   
-  
-  element = "//*/option[@value = '']"
-  
-  genus.list = vector(mode = "list", length(taxa.s))
-  
-  
-  for (taxon in 1:length(taxa.s)) {
-    # which url
-    remDr$navigate("http://nemaplex.ucdavis.edu/Ecology/EcophysiologyParms/GenusParmsQuery.aspx") 
-    # which element
-    opt1 <- remDr$findElement(using='xpath', value= '//*[@id="DropDownList3"]')
-    # click
-    opt1$clickElement()
-    # we place a Family between the ''...
-    opt2 <- remDr$findElement(using = 'xpath', paste(c(substr(element, 1, 21), 
-                                                       substr(element, 22,23)), 
-                                                     collapse = taxa.s[taxon]))
-    # ...then click
-    opt2$clickElement()
-    # we select the Process Query button and click
-    opt3 <- remDr$findElement(using = 'xpath', value= '//*[@id="Button1"]')
-    opt3$clickElement()
+  if (length(taxa.s) > 0) { 
     
-    # ta-dan! we are inside the Genus Parameters page
+    # taxa names will be interposed between the ''
+    element = "//*/option[@value = '']"
     
-    # I do not know why this works but it gives a list with all tables
-    find.tables <- remDr$findElement(using = 'xpath', value= '//*[@id="DetailsView2"]')
-    tables = find.tables$getPageSource()[[1]] %>% read_html() %>% html_table(fill = TRUE)
-    
-    # we select the tables with taxon parameters and combine them
-    genus.list[[taxon]] = rbind(tables[[3]],tables[[4]],tables[[5]]) 
-    
-    # name columns after 1st row ("Genus","(Genus name)")
-    genus.list[[taxon]] = genus.list[[taxon]] %>% 
-      setNames(genus.list[[taxon]][1,]) %>% 
-      # then drop that row
-      dplyr::slice(-1)
+    genus.list = vector(mode = "list", length(taxa.s))
     
     
+    for (taxon in 1:length(taxa.s)) {
+      # which url
+      remDr$navigate("http://nemaplex.ucdavis.edu/Ecology/EcophysiologyParms/GenusParmsQuery.aspx") 
+      # which element
+      opt1 <- remDr$findElement(using='xpath', value= '//*[@id="DropDownList3"]')
+      # click
+      opt1$clickElement()
+      # we place a Family between the ''...
+      opt2 <- remDr$findElement(using = 'xpath', paste(c(substr(element, 1, 21), 
+                                                         substr(element, 22,23)), 
+                                                       collapse = taxa.s[taxon]))
+      # ...then click
+      opt2$clickElement()
+      # we select the Process Query button and click
+      opt3 <- remDr$findElement(using = 'xpath', value= '//*[@id="Button1"]')
+      opt3$clickElement()
+      
+      # ta-dan! we are inside the Genus Parameters page
+      
+      # I do not know why this works but it gives a list with all tables
+      find.tables <- remDr$findElement(using = 'xpath', value= '//*[@id="DetailsView2"]')
+      tables = find.tables$getPageSource()[[1]] %>% read_html() %>% html_table(fill = TRUE)
+      
+      # we select the tables with taxon parameters and combine them
+      genus.list[[taxon]] = rbind(tables[[3]],tables[[4]],tables[[5]]) 
+      
+      # name columns after 1st row ("Genus","(Genus name)")
+      genus.list[[taxon]] = genus.list[[taxon]] %>% 
+        setNames(genus.list[[taxon]][1,]) %>% 
+        # then drop that row
+        dplyr::slice(-1)
+      
+      
+    }
+    
+    taxa.gen = genus.list %>% reduce(full_join, by = "Genus")
+    taxa.gen = as.data.frame(taxa.gen)
+    rownames(taxa.gen) = taxa.gen[,1]
+    taxa.gen = taxa.gen[,-1]
+    all.gen = as.data.frame(t(taxa.gen))
+    all.gen = data.frame(lapply(all.gen, as.numeric))
+  }else{
+    # in case your input contains no genera
+    all.fam = vector(mode = "list", length(taxa.s))
+    print("No genera in input")
   }
-  
-  taxa.gen = genus.list %>% reduce(full_join, by = "Genus")
-  taxa.gen = as.data.frame(taxa.gen)
-  rownames(taxa.gen) = taxa.gen[,1]
-  taxa.gen = taxa.gen[,-1]
-  all.gen = as.data.frame(t(taxa.gen))
   
   taxa.all = list(all.gen, all.fam)
   
   
-  
+  system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
   
   print("These taxa were not found in the database")
   print(setdiff(taxa, c(g.present,f.present)))
   return(taxa.all)
-  
-  system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
   
 }
 
