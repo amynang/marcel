@@ -19,11 +19,9 @@ A vector with the taxa for which the database will be queried.
 }
 }
 \details{
-If the input contains taxa not present in Nemaplex, these will appear on the console
-
+If the input contains taxa not present in Nemaplex, these will appear on the console.
 query_nemaplex() currently uses Firefox, so the browser needs to be installed in 
 your computer. It also requires JAVA. For 64bit(32bit) R you need 64bit(32bit) JAVA.
-
 }
 \value{
 %%  ~Describe the value returned
@@ -49,6 +47,14 @@ Angelos Amyntas
 }
 \note{
 %%  ~~further notes~~
+  My experience is that the first time you will call the function, RSelenium will 
+  do some setup procedure. It is a good idea to start with a small number of taxa
+  (1 or 2 are fine) to make sure everything runs ok before you input the complete 
+  list of taxa you want to retrieve information for.
+  
+  If any error occurs that breaks the process, you will need to call
+  system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
+  to kill java manually, before you try calling the function again.
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
