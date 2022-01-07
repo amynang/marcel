@@ -66,7 +66,7 @@ extrapolate.robust = function(df, counts, n = 100) {
 }
 
 
-query_nemaplex = function(taxa) {
+query_nemaplex = function(taxa, complete = FALSE) {
   require(tidyverse)
   require(rvest)
   require(rJava)
@@ -137,9 +137,11 @@ query_nemaplex = function(taxa) {
     taxa.fam = family.list %>% reduce(full_join, by = "Family")
     taxa.fam = as.data.frame(taxa.fam)
     rownames(taxa.fam) = taxa.fam[,1]
-    taxa.fam = taxa.fam[,-1]
+    taxa.fam = taxa.fam[,-1, drop=FALSE]
     all.fam = as.data.frame(t(taxa.fam))
     all.fam[,5:28] = data.frame(lapply(all.fam[,5:28], as.numeric))
+    all.fam = dplyr::rename(all.fam, N=nFamily)
+    names(all.fam) = gsub("Famavg", "Avg", names(all.fam))
   }else{
     # in case your input contains no families
     all.fam = vector(mode = "list", length(taxa.s))
@@ -206,16 +208,23 @@ query_nemaplex = function(taxa) {
     taxa.gen = genus.list %>% reduce(full_join, by = "Genus")
     taxa.gen = as.data.frame(taxa.gen)
     rownames(taxa.gen) = taxa.gen[,1]
-    taxa.gen = taxa.gen[,-1]
+    taxa.gen = taxa.gen[,-1, drop=FALSE]
     all.gen = as.data.frame(t(taxa.gen))
     all.gen[,3:26] = data.frame(lapply(all.gen[,3:26], as.numeric))
+    all.gen = dplyr::rename(all.gen, N=Ngenus)
+    names(all.gen) = gsub("Genavg", "Avg", names(all.gen))
   }else{
     # in case your input contains no genera
-    all.fam = vector(mode = "list", length(taxa.s))
+    all.gen = vector(mode = "list", length(taxa.s))
     print("No genera in input")
   }
   
-  taxa.all = list(all.gen, all.fam)
+  if (complete == TRUE) {
+    taxa.all = dplyr::bind_rows(all.fam, all.gen)
+  }else{
+    taxa.all = dplyr::bind_rows(all.fam, all.gen)
+    taxa.all = taxa.all[c("cp_value","feeding","N","AvgMass","StderrMass")]
+  }
   
   
   system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
