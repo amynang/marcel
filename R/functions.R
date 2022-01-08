@@ -73,7 +73,11 @@ query_nemaplex = function(taxa, complete = FALSE) {
   require(RSelenium)
   
   # start the thingy
-  driver <- rsDriver(browser = "firefox")
+  driver <- rsDriver(browser = "firefox", verbose = FALSE
+                     #this line makes a headless firefox :) 
+                     #i.e. running in background; comment it out for debugging
+                     ,extraCapabilities = list("moz:firefoxOptions" = list(args = list('--headless')))
+                     )
   remDr<-driver[["client"]]
   
   
@@ -131,6 +135,11 @@ query_nemaplex = function(taxa, complete = FALSE) {
         # then drop that row
         dplyr::slice(-1)
       
+      cat('\014')
+      cat(paste0(round((taxon/length(taxa.s))*100), '%'))
+      #Sys.sleep(.05)
+      if (taxon == length(taxa.s)) cat('- Families query complete
+                                       ')
       
     }
     
@@ -202,6 +211,11 @@ query_nemaplex = function(taxa, complete = FALSE) {
         # then drop that row
         dplyr::slice(-1)
       
+      cat('\014')
+      cat(paste0(round((taxon/length(taxa.s))*100), '%'))
+      #Sys.sleep(.05)
+      if (taxon == length(taxa.s)) cat('- Genera query complete
+                                       ')
       
     }
     
@@ -227,7 +241,13 @@ query_nemaplex = function(taxa, complete = FALSE) {
   }
   
   
+  # closes firefox remote browser (which you don't see if headless)
+  remDr$closeWindow()
+  
+  # kills java
   system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
+
+  
   
   print("These taxa were not found in the database")
   print(setdiff(taxa, c(g.present,f.present)))
