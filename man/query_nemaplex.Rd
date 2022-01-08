@@ -9,13 +9,17 @@ Query NEMAPLEX to retrieve information about nematode taxa
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-query_nemaplex(taxa)
+query_nemaplex(taxa, complete = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{taxa}{
 %%     ~~Describe \code{x} here~~
 A vector with the taxa for which the database will be queried.
+}
+\item{complete}{
+%%     ~~Describe \code{x} here~~
+Logical. Default returns a subset of all the information provided by nemaplex. This does not make the query faster, it just makes the output less messy.
 }
 }
 \details{
@@ -29,13 +33,9 @@ your computer. It also requires JAVA. For 64bit(32bit) R you need 64bit(32bit) J
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
-A list, containing:
-   \item{gen}{
-A dataframe with Ecophysiological Parameters for the genera in 'taxa'
-}
-   \item{fam}{
-A dataframe with Ecophysiological Parameters for the families in 'taxa'
-}
+
+A dataframe with Ecophysiological Parameters for the genera and families in 'taxa'.
+
 
 
 }
