@@ -257,9 +257,32 @@ query_nemaplex = function(taxa, complete = FALSE) {
 
 
 
+# EI = 100 * [e / (e+b)] 
+# e representing the enrichment component, calculated as the weighted frequencies
+# of Ba1 and Fu2 nematodes and b representing the basal food web component, 
+# calculated as the weighted frequencies of Ba2 and Fu2 nematodes 
+
+e = 3.2*Ba1 + .8*Fu2
+b = .8*(Ba2 + Fu2)
+
+# Using, as a reference, the fecundity and life-course
+# characteristics of the Ba2 guild, with a weighting of
+# 0.8 (Fig. 1), the Ba1 guild is more fecund and has a
+# shorter life course. Under available resource conditions, 
+# the population increase rate is about four times
+# as great as that of the Ba2 guild (Ferris et al., 1996a,b).
+# Consequently, they are assigned a weighting of 3.2
+
 
 Enrichment <- function() {
-
+  
+  Ba1 = 
+  Ba2 =
+  Fu2 =
+  e = 3.2*Ba1 + .8*Fu2
+  b = .8*(Ba2 + Fu2)
+  
+  EI = 100*(e/(e+b))
 }
 
 Structure <- function() {
