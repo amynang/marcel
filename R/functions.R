@@ -262,8 +262,6 @@ query_nemaplex = function(taxa, complete = FALSE) {
 # of Ba1 and Fu2 nematodes and b representing the basal food web component, 
 # calculated as the weighted frequencies of Ba2 and Fu2 nematodes 
 
-e = 3.2*Ba1 + .8*Fu2
-b = .8*(Ba2 + Fu2)
 
 # Using, as a reference, the fecundity and life-course
 # characteristics of the Ba2 guild, with a weighting of
@@ -274,16 +272,33 @@ b = .8*(Ba2 + Fu2)
 # Consequently, they are assigned a weighting of 3.2
 
 
-Enrichment <- function() {
+Enrichment <- function(df,nemaplex) {
+  #  e = 3.2*Ba1 + .8*Fu2
+  #  b = .8*(Ba2 + Fu2)
+  #  EI = 100*(e/(e+b))
   
-  Ba1 = 
-  Ba2 =
-  Fu2 =
-  e = 3.2*Ba1 + .8*Fu2
-  b = .8*(Ba2 + Fu2)
+  # I hate that this unintuitive mostrosity works like a charm
+  # in english: "select those columns in df, whose names match the names of those
+  # rows in nemaplex, where "cp_value" is 1 and "feeding" is 3"
+  Ba1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
   
-  EI = 100*(e/(e+b))
+  Ba2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
+  
+  Fu2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
+  
+  index = df %>% mutate(EI = 100*((3.2*rowSums(.[Ba1]) + .8*rowSums(.[Fu2]))/
+                                    (3.2*rowSums(.[Ba1]) + .8*rowSums(.[Fu2])+.8*(rowSums(.[Ba2]) + rowSums(.[Fu2])))),
+                        .keep = "none")
+  
+  tryme2 = df %>% select_if(~!is.numeric(.x))
+  
+  out = cbind(tryme2,index)
+  return(out)
 }
+
 
 Structure <- function() {
 
