@@ -392,7 +392,8 @@ Channel <- function() { # This needs to be checked against Marcels values!!!
   Fu2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
 
-  index = df %>% mutate(CI = 100*(.8*rowSums(.[Fu2])/(3.2*rowSums(.[Ba1]) + .8*rowSums(.[Fu2]))),
+  index = df %>% mutate(CI = 100*(.8*rowSums(.[Fu2])/(3.2*rowSums(.[Ba1]) + 
+                                                       .8*rowSums(.[Fu2]))),
                         .keep = "none")
   
   tryme2 = df %>% select_if(~!is.numeric(.x))
