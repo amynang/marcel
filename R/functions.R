@@ -271,6 +271,10 @@ query_nemaplex = function(taxa, complete = FALSE) {
 # as great as that of the Ba2 guild (Ferris et al., 1996a,b).
 # Consequently, they are assigned a weighting of 3.2
 
+# b=(Ba2+Fu2)*W2, where W2.= 0.8,
+# e=(Ba1*W1)+(Fu2*W2), where W1 = 3.2 and W2.= 0.8
+# s=(Ban*Wn+Can*Wn+Fun*Wn+Omn*Wn)
+# where n=3-5, W3.= 1.8, W4.= 3.2, W5.= 5.0
 
 Enrichment <- function(df,nemaplex) {
   #  e = 3.2*Ba1 + .8*Fu2
@@ -289,8 +293,11 @@ Enrichment <- function(df,nemaplex) {
   Fu2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
   
-  index = df %>% mutate(EI = 100*((3.2*rowSums(.[Ba1]) + .8*rowSums(.[Fu2]))/
-                                    (3.2*rowSums(.[Ba1]) + .8*rowSums(.[Fu2])+.8*(rowSums(.[Ba2]) + rowSums(.[Fu2])))),
+  index = df %>% mutate(EI = 100*((3.2*rowSums(.[Ba1]) + 
+                                    .8*rowSums(.[Fu2])) /
+                                  (3.2*rowSums(.[Ba1]) + 
+                                    .8*rowSums(.[Fu2]) + .8*(rowSums(.[Ba2]) + 
+                                                             rowSums(.[Fu2])))),
                         .keep = "none")
   
   tryme2 = df %>% select_if(~!is.numeric(.x))
@@ -300,10 +307,96 @@ Enrichment <- function(df,nemaplex) {
 }
 
 
-Structure <- function() {
-
+Structure <- function() {  # This needs to be checked against Marcels values!!!
+  
+  # the guilds indicative of structure are:
+  Ba3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
+  Ba4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
+  Ba5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
+  
+  Fu3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
+  Fu4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
+  Fu5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
+  
+  Om3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 8)
+  Om4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 8)
+  Om5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 8)
+  
+  Ca2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 5)
+  Ca3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 5)
+  Ca4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 5)
+  Ca5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 5)
+  
+  # the guilds indicative of basal characteristics are:
+  Ba1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
+  
+  Fu2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
+  
+  # calculate the index
+  index = df %>% mutate(SI = 100*( .8* rowSums(.[Ca2]) + # in the book this is not in
+                                  1.8*(rowSums(.[Ba3]) + 
+                                       rowSums(.[Fu3]) + 
+                                       rowSums(.[Om3]) + 
+                                       rowSums(.[Ca3]))+
+                                  3.2*(rowSums(.[Ba4]) + 
+                                       rowSums(.[Fu4]) + 
+                                       rowSums(.[Om4]) + 
+                                       rowSums(.[Ca4]))+
+                                    5*(rowSums(.[Ba5]) + 
+                                       rowSums(.[Fu5]) + 
+                                       rowSums(.[Om5]) + 
+                                       rowSums(.[Ca5]))) / 
+                                  (.8* rowSums(.[Ca2]) + # again
+                                  1.8*(rowSums(.[Ba3]) + 
+                                       rowSums(.[Fu3]) + 
+                                       rowSums(.[Om3]) + 
+                                       rowSums(.[Ca3]))+
+                                  3.2*(rowSums(.[Ba4]) + 
+                                       rowSums(.[Fu4]) + 
+                                       rowSums(.[Om4]) + 
+                                       rowSums(.[Ca4]))+
+                                    5*(rowSums(.[Ba5]) + 
+                                       rowSums(.[Fu5]) + 
+                                       rowSums(.[Om5]) + 
+                                       rowSums(.[Ca5])) + .8*(rowSums(.[Ba2]) + 
+                                                              rowSums(.[Fu2]))), 
+                        .keep = "none")
+  
+  tryme2 = df %>% select_if(~!is.numeric(.x))
+  
+  out = cbind(tryme2, index)
+  return(out)
 }
 
-Channel <- function() {
+Channel <- function() { # This needs to be checked against Marcels values!!!
+  # channel index (CI), 100 * (0.8Fu2/(3.2Ba1 + 0.8Fu2))
+  
+  Ba1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
+  
+  Fu2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
+                nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 2)
 
+  index = df %>% mutate(CI = 100*(.8*rowSums(.[Fu2])/(3.2*rowSums(.[Ba1]) + .8*rowSums(.[Fu2]))),
+                        .keep = "none")
+  
+  tryme2 = df %>% select_if(~!is.numeric(.x))
+  
+  out = cbind(tryme2, index)
+  return(out)
 }
