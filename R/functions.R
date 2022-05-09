@@ -307,7 +307,7 @@ Enrichment <- function(df,nemaplex) {
 }
 
 
-Structure <- function() {  # This needs to be checked against Marcels values!!!
+Structure <- function(df, nemaplex) {  # This needs to be checked against Marcels values!!!
   
   # the guilds indicative of structure are:
   Ba3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3 & 
@@ -341,7 +341,7 @@ Structure <- function() {  # This needs to be checked against Marcels values!!!
                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 5)
   
   # the guilds indicative of basal characteristics are:
-  Ba1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1 & 
+  Ba2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 3)
   
   Fu2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2 & 
@@ -361,7 +361,7 @@ Structure <- function() {  # This needs to be checked against Marcels values!!!
                                        rowSums(.[Fu5]) + 
                                        rowSums(.[Om5]) + 
                                        rowSums(.[Ca5]))) / 
-                                  (.8* rowSums(.[Ca2]) + # again
+                                 ( .8* rowSums(.[Ca2]) + # again
                                   1.8*(rowSums(.[Ba3]) + 
                                        rowSums(.[Fu3]) + 
                                        rowSums(.[Om3]) + 
@@ -383,7 +383,7 @@ Structure <- function() {  # This needs to be checked against Marcels values!!!
   return(out)
 }
 
-Channel <- function() { # This needs to be checked against Marcels values!!!
+Channel <- function(df, nemaplex) { # This needs to be checked against Marcels values!!!
   # channel index (CI), 100 * (0.8Fu2/(3.2Ba1 + 0.8Fu2))
   
   Ba1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1 & 
@@ -399,5 +399,13 @@ Channel <- function() { # This needs to be checked against Marcels values!!!
   tryme2 = df %>% select_if(~!is.numeric(.x))
   
   out = cbind(tryme2, index)
+  return(out)
+}
+
+
+all.indices <- function(df, nemaplex) {
+  out = cbind(Enrichment(df, nemaplex),
+               Structure(df, nemaplex),
+                 Channel(df, nemaplex))
   return(out)
 }
