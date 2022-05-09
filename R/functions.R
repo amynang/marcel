@@ -245,7 +245,8 @@ query_nemaplex = function(taxa, complete = FALSE) {
   remDr$closeWindow()
   
   # kills java
-  system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE)
+  system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE,
+         show.output.on.console = FALSE)
 
   
   
@@ -255,7 +256,52 @@ query_nemaplex = function(taxa, complete = FALSE) {
   
 }
 
-
+name_check = function(taxa) {
+  require(rvest)
+  require(rJava)
+  require(RSelenium)
+  
+  # start the thingy
+  driver <- rsDriver(browser = "firefox", verbose = FALSE
+                     #this line makes a headless firefox :) 
+                     #i.e. running in background; comment it out for debugging
+                     ,extraCapabilities = list("moz:firefoxOptions" = list(args = list('--headless')))
+  )
+  remDr<-driver[["client"]]
+  
+  ############################## Family check ##############################
+  
+  # which url
+  remDr$navigate("http://nemaplex.ucdavis.edu/Ecology/EcophysiologyParms/FamilyParmsQuery.aspx")
+  # which element inside that url (on Firefox, you can find that by 
+  # rigth click > Inspect and then patiently going through the page elements)
+  webElem <- remDr$findElement(using='xpath', value= '//*[@id="DropDownList2"]')
+  # get the list of available families on the dropdown menu
+  families <- webElem$getElementText()
+  f.present = strsplit(families[[1]], "\n", perl = TRUE)[[1]]
+  
+  ############################## Genus check ###############################
+  
+  # which url
+  remDr$navigate("http://nemaplex.ucdavis.edu/Ecology/EcophysiologyParms/GenusParmsQuery.aspx")
+  # which element inside that url (on Firefox, you can find that by 
+  # rigth click > Inspect and then patiently going through the page elements)
+  webElem <- remDr$findElement(using='xpath', value= '//*[@id="DropDownList3"]')
+  # get the list of available genera on the dropdown menu
+  genera <- webElem$getElementText()
+  g.present = strsplit(genera[[1]], "\n", perl = TRUE)[[1]]
+  
+  # closes firefox remote browser (which you don't see if headless)
+  remDr$closeWindow()
+  
+  # kills java
+  system("taskkill /im java.exe /f", intern=FALSE, ignore.stdout=FALSE,
+         show.output.on.console = FALSE)
+  
+  print("These taxa were not found in the database")
+  print(setdiff(taxa, c(g.present,f.present)))
+  
+}
 
 # EI = 100 * [e / (e+b)] 
 # e representing the enrichment component, calculated as the weighted frequencies
