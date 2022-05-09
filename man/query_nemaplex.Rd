@@ -1,5 +1,6 @@
 \name{query_nemaplex}
 \alias{query_nemaplex}
+\alias{name_check}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 %%  ~~function to do ... ~~
@@ -9,6 +10,7 @@ Query NEMAPLEX to retrieve information about nematode taxa
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
+name_check(taxa)
 query_nemaplex(taxa, complete = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -24,6 +26,9 @@ Logical. Default returns a subset of all the information provided by nemaplex. T
 }
 \details{
 If the input contains taxa not present in Nemaplex, these will appear on the console.
+
+name_check() can be used to examine if taxa in the input are not present in the database, before running the entire query. These can be false absences, due to nomenclature differences (eg. "Thornematidae" vs "Thornenematidae").
+
 query_nemaplex() currently uses Firefox, so the browser needs to be installed in 
 your computer. It also requires JAVA. For 64bit(32bit) R you need 64bit(32bit) JAVA.
 }
