@@ -448,6 +448,35 @@ Channel <- function(df, nemaplex) { # This needs to be checked against Marcels v
   return(out)
 }
 
+C_P <- function(df, nemaplex) { 
+  
+  c_p1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1)
+  c_p2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2)
+  c_p3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3)
+  c_p4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4)
+  c_p5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5)
+  
+  index = df %>% mutate(cp1 = rowSums(.[c_p1])/
+                              rowSums(select_if(., is.numeric)),
+                        cp2 = rowSums(.[c_p2])/
+                              rowSums(select_if(., is.numeric)),
+                        cp3 = rowSums(.[c_p3])/
+                              rowSums(select_if(., is.numeric)),
+                        cp4 = rowSums(.[c_p4])/
+                              rowSums(select_if(., is.numeric)),
+                        cp5 = rowSums(.[c_p5])/
+                              rowSums(select_if(., is.numeric)),
+                        .keep = "none")
+  tryme2 = df %>% select_if(~!is.numeric(.x))
+  
+  out = cbind(tryme2, index)
+  return(out)
+}
+
+
+
+
+
 
 all.indices <- function(df, nemaplex) {
   out = cbind(Enrichment(df, nemaplex),
