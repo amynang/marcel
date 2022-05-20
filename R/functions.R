@@ -473,14 +473,138 @@ C_P <- function(df, nemaplex) {
   return(out)
 }
 
+Maturity <- function(df, nemaplex, 
+                     exclude.plant.feeders = TRUE,
+                     exclude.cp1 = TRUE, ...) {
+  
+  if (exclude.plant.feeders == TRUE) {
+    # exclude plant feeding nematodes from cp categories
+    c_p1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1& 
+                   nemaplex$feeding[match(colnames(df), rownames(nemaplex))] != 1)
+    c_p2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2& 
+                   nemaplex$feeding[match(colnames(df), rownames(nemaplex))] != 1)
+    c_p3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3& 
+                   nemaplex$feeding[match(colnames(df), rownames(nemaplex))] != 1)
+    c_p4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4& 
+                   nemaplex$feeding[match(colnames(df), rownames(nemaplex))] != 1)
+    c_p5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5& 
+                   nemaplex$feeding[match(colnames(df), rownames(nemaplex))] != 1)
+    
+    if (exclude.cp1 == TRUE) { 
+     index = df %>% mutate(MI = (2*rowSums(.[c_p2]) + 
+                                 3*rowSums(.[c_p3]) + 
+                                 4*rowSums(.[c_p4]) + 
+                                 5*rowSums(.[c_p5]))/
+                                (rowSums(.[c_p2]) + 
+                                 rowSums(.[c_p3]) + 
+                                 rowSums(.[c_p4]) + 
+                                 rowSums(.[c_p5])),
+                           .keep = "none")
+   }else{
+      index = df %>% mutate(MI = (1*rowSums(.[c_p1]) +
+                                  2*rowSums(.[c_p2]) + 
+                                  3*rowSums(.[c_p3]) + 
+                                  4*rowSums(.[c_p4]) + 
+                                  5*rowSums(.[c_p5]))/
+                                 (rowSums(.[c_p1]) +
+                                  rowSums(.[c_p2]) + 
+                                  rowSums(.[c_p3]) + 
+                                  rowSums(.[c_p4]) + 
+                                  rowSums(.[c_p5])),
+                            .keep = "none")
+    }
+  }else{
+    # include plant feeding nematodes from cp categories
+    c_p1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1)
+    c_p2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2)
+    c_p3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3)
+    c_p4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4)
+    c_p5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5)
+
+    if (exclude.cp1 == TRUE) { 
+      index = df %>% mutate(MI = (2*rowSums(.[c_p2]) + 
+                                  3*rowSums(.[c_p3]) + 
+                                  4*rowSums(.[c_p4]) + 
+                                  5*rowSums(.[c_p5]))/
+                                 (rowSums(.[c_p2]) + 
+                                  rowSums(.[c_p3]) + 
+                                  rowSums(.[c_p4]) + 
+                                  rowSums(.[c_p5])),
+                            .keep = "none")
+    }else{
+      index = df %>% mutate(MI = (1*rowSums(.[c_p1]) +
+                                  2*rowSums(.[c_p2]) + 
+                                  3*rowSums(.[c_p3]) + 
+                                  4*rowSums(.[c_p4]) + 
+                                  5*rowSums(.[c_p5]))/
+                                 (rowSums(.[c_p1]) +
+                                  rowSums(.[c_p2]) + 
+                                  rowSums(.[c_p3]) + 
+                                  rowSums(.[c_p4]) + 
+                                  rowSums(.[c_p5])),
+                            .keep = "none")
+    }
+
+  }
+  
+  
+}
+
+Plant.Parasite <- function(df, nemaplex, 
+                           exclude.cp1 = TRUE, ...) {
+  c_p1 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 1& 
+                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 1)
+  c_p2 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 2& 
+                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 1)
+  c_p3 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 3& 
+                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 1)
+  c_p4 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 4& 
+                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 1)
+  c_p5 = which(nemaplex$cp_value[match(colnames(df), rownames(nemaplex))] == 5& 
+                 nemaplex$feeding[match(colnames(df), rownames(nemaplex))] == 1)
+  
+  if (exclude.cp1 == TRUE) { 
+    index = df %>% mutate(MI = (2*rowSums(.[c_p2]) + 
+                                3*rowSums(.[c_p3]) + 
+                                4*rowSums(.[c_p4]) + 
+                                5*rowSums(.[c_p5]))/
+                               (rowSums(.[c_p2]) + 
+                                rowSums(.[c_p3]) + 
+                                rowSums(.[c_p4]) + 
+                                rowSums(.[c_p5])),
+                          .keep = "none")
+  }else{
+    index = df %>% mutate(MI = (1*rowSums(.[c_p1]) +
+                                2*rowSums(.[c_p2]) + 
+                                3*rowSums(.[c_p3]) + 
+                                4*rowSums(.[c_p4]) + 
+                                5*rowSums(.[c_p5]))/
+                               (rowSums(.[c_p1]) +
+                                rowSums(.[c_p2]) + 
+                                rowSums(.[c_p3]) + 
+                                rowSums(.[c_p4]) + 
+                                rowSums(.[c_p5])),
+                          .keep = "none")
+  }
+  
+}
 
 
 
-
-
-all.indices <- function(df, nemaplex) {
+all.indices <- function(df, nemaplex, 
+                        exclude.plant.feeders = TRUE,
+                        exclude.cp1 = TRUE, ...) {
   out = cbind(Enrichment(df, nemaplex),
                Structure(df, nemaplex),
-                 Channel(df, nemaplex))
+                 Channel(df, nemaplex),
+                     C_P(df,nemaplex),
+                Maturity(df,nemaplex, 
+                         exclude.plant.feeders = exclude.plant.feeders,
+                         exclude.cp1 = exclude.cp1,  ...),
+          Plant.Parasite(df,nemaplex, 
+                         exclude.cp1 = exclude.cp1,  ...))
+  
+  out = out[, !duplicated(colnames(out))]
+  
   return(out)
 }

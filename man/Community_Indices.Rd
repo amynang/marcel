@@ -13,13 +13,14 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-all.indices(x, nemaplex)
+all.indices(x, nemaplex, ...)
 
 Enrichment(x, nemaplex)
 Structure(x, nemaplex)
 Channel(x, nemaplex)
-Maturity(x, nemaplex)
-Plant.Parasite(x, nemaplex)
+C_P(x, nemaplex)
+Maturity(x, nemaplex, exclude.plant.feeders = TRUE, exclude.cp1 = TRUE)
+Plant.Parasite(x, nemaplex, exclude.cp1 = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,6 +31,13 @@ A dataframe with locations/samples as rows and nematode taxa (families or genera
   \item{nemaplex}{
   The output of query_nemaplex(), containing information about the c-p scores and the feeding habits of the taxa in x
   }
+  \item{exclude.plant.feeders}{
+  Logical. Not excluding plant feeding nematodes corresponds to \eqn{\Sigma}MI in Ferris & Bongers (2009). Defaults to TRUE
+  }
+  \item{exclude.cp1}{
+  Logical. Excluding the cp1 class corresponds to (\eqn{\Sigma})MI2-5 in Ferris & Bongers (2009). Defaults to TRUE
+  }
+  
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -47,6 +55,10 @@ The Enrichment index is calculated as EI = 100 * e / (e + b)
 The Structure index is calculated as SI = 100 * s / (s + b)
 
 The Channel index is calculated as CI = 100 * (0.8*Fu2 / (3.2*Ba1 + 0.8*Fu2))
+
+The Coloniser_Persister classes are given as percentages of the total abundance
+
+The Maturity index is calculated as \eqn{\Sigma}([i]*cp[i]) / \eqn{\Sigma}cp[i] with i in [1-5] and cp[i] is the (relative) abundance of that class. Note that the index can be calculated with or without herbivores and with or without the cp1 class.
 }
 \value{
 Either a single column dataframe (in the case of individual index functions), or a dataframe with samples as rows and all the indices calculated by maRcel as columns
