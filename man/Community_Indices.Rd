@@ -6,7 +6,7 @@
 \alias{Maturity}
 \alias{Plant.Parasite}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
+\title{Calculate nematode community indices
 %%  ~~function to do ... ~~
 }
 \description{
