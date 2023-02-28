@@ -73,7 +73,8 @@ query_nemaplex = function(taxa, complete = FALSE) {
   require(RSelenium)
   
   # start the thingy
-  driver <- rsDriver(browser = "firefox", verbose = FALSE
+  driver <- rsDriver(browser = "firefox", verbose = FALSE,
+                     chromever = NULL,
                      #this line makes a headless firefox :) 
                      #i.e. running in background; comment it out for debugging
                      ,extraCapabilities = list("moz:firefoxOptions" = list(args = list('--headless')))
