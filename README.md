@@ -1,3 +1,4 @@
+![Static Badge](https://img.shields.io/badge/status-on_ice-lightblue?style=plastic)
 # marcel
 (eventually) an R package that calculates nematode community indices
 
